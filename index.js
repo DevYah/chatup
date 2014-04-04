@@ -14,5 +14,16 @@ app.get("/", function(req, res) {
   //res.send("It works!");
 });
 
-app.listen(port);
+//app.listen(port); // not realtime
+var io = require('socket.io').listen(app.listen(port)); // realtime
+
+io.sockets.on('connection', function(socket){
+  socket.emit('message', {message: 'welcome to the chat'});
+  socket.on('send', function(data) {
+    io.sockets.emit('message', data);
+  });
+});
+
+
+
 console.log('Listenintg on ' + port);
