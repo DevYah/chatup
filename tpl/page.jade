@@ -1,11 +1,12 @@
 doctype html
 html
   head
-    title= "Real time web chat"
+    title= 'Real time web chat'
+    link(rel='stylesheet', href='/style.css')
     script(src='/chat.js')
     script(src='/socket.io/socket.io.js')
   body
-    #content(style='width: 500px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow-y: scroll;')
+    #content.thread
     .controls
         input#field(style='width:350px;')
         input#send(type='button', value='send')
