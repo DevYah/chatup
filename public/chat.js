@@ -1,10 +1,10 @@
 window.onload = function() {
   var messages = [];
   var socket = io.connect('http://localhost:3700');
-  var field = document.getElementById("field");
-  var sendButton = document.getElementById("send");
-  var content = document.getElementById("content");
-  var name = document.getElementById("name");
+  var field = $("#field")[0];
+  var sendButton $("#send")[0];
+  var content = $("content")[0];
+  var name = $("name")[0];
 
   socket.on('message', function (data) {
     if(data.message) {
@@ -15,6 +15,7 @@ window.onload = function() {
         html += messages[i].name + ": ";
         html += messages[i].message + '<br />';
       }
+      // TODO append don't persist
       content.innerHTML = html;
       content.scrollTop(content.scrollHeight);
     } else {

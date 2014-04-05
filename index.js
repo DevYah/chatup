@@ -10,7 +10,7 @@ app.engine('jade', require('jade').__express);
 // static resources
 app.use(express.static(__dirname + '/public'));
 app.get("/", function(req, res) {
-  res.render('page');
+  res.render('room');
 });
 
 //app.listen(port); // not realtime
