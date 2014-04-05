@@ -1,10 +1,9 @@
+var sendMessage;
 window.onload = function() {
   var messages = [];
-  var socket = io.connect('http://localhost:3700');
   var field = $("#field")[0];
-  var sendButton $("#send")[0];
-  var content = $("content")[0];
-  var name = $("name")[0];
+  var sendButton = $("#send")[0];
+  var content = $("#content")[0];
 
   socket.on('message', function (data) {
     if(data.message) {
@@ -12,24 +11,20 @@ window.onload = function() {
       var html = '';
       var i;
       for(i=0; i<messages.length; i++) {
-        html += messages[i].name + ": ";
+        html += messages[i].username + ": ";
         html += messages[i].message + '<br />';
       }
-      // TODO append don't persist
+      // TODO append don't accumlate
       content.innerHTML = html;
-      content.scrollTop(content.scrollHeight);
+      content.scrollTop = content.scrollHeight;
     } else {
       console.log("There is a problem:", data);
     }
   });
 
   sendButton.onclick = sendMessage = function() {
-    if (name.value === '') {
-      alert('Please enter your name');
-      return;
-    }
     var text = field.value;
-    socket.emit('send', { message: text, name: name.value });
+    socket.emit('send', { message: text });
     field.value = '';
   };
 };

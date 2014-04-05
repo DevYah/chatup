@@ -2,8 +2,9 @@ extends layout
 
 block append head
   script(src='/chat.js')
+  h4 welcome to #{name}
 
-block append body
+block append content
   #content.thread
   .controls
     | Name:

@@ -2,10 +2,12 @@ extends layout
 
 block append head
   script(src='/page.js')
+  script(src='/chat.js')
 
-block append body
-  | Username:
+block append content
+  label(for='username') Username
   input#username
+  input.button#set_username(type='button', value='Set Username')
   br
   p choose a group
   input.button.group(type='button', value='Space')
@@ -13,4 +15,12 @@ block append body
   input.button.group(type='button', value='Sports')
   input.button.group(type='button', value='Business')
   input.button.group(type='button', value='Educaiton')
+  br
 
+  #content.thread                           
+  .controls                                 
+    | Name:                                 
+    input#name(style='width:350px;')        
+    br                                      
+    input#field(style='width:350px;')       
+    input#send(type='button', value='send') 
