@@ -1,18 +1,16 @@
-doctype html
-html
-  head
-    title= 'Real time web chat'
-    link(rel='stylesheet', href='/style.css')
-    script(src='/jquery.js')
-    script(src='/chat.js')
-    script(src='/socket.io/socket.io.js')
-  body
-    #content.thread
-    .controls
-      | Name:
-      input#name(style='width:350px;')
-      br
-      input#field(style='width:350px;')
-      input#send(type='button', value='send')
+extends layout
 
+block append head
+  script(src='/page.js')
+
+block append body
+  | Username:
+  input#username
+  br
+  p choose a group
+  input.button.group(type='button', value='Space')
+  input.button.group(type='button', value='Science')
+  input.button.group(type='button', value='Sports')
+  input.button.group(type='button', value='Business')
+  input.button.group(type='button', value='Educaiton')
 
