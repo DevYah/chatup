@@ -3,12 +3,16 @@ html
   head
     title= 'Real time web chat'
     link(rel='stylesheet', href='/style.css')
+    script(src='/jquery.js')
     script(src='/chat.js')
     script(src='/socket.io/socket.io.js')
   body
     #content.thread
     .controls
-        input#field(style='width:350px;')
-        input#send(type='button', value='send')
+      | Name:
+      input#name(style='width:350px;')
+      br
+      input#field(style='width:350px;')
+      input#send(type='button', value='send')
 
 
