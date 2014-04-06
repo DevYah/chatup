@@ -8,7 +8,7 @@ exports.io = io;
 var rooms = require('./rooms.js');
 
 // jade stuff
-app.set('views', __dirname + '/tpl');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.engine('jade', require('jade').__express);
 
