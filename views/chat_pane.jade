@@ -1,0 +1,11 @@
+mixin chat_pane()
+  .room
+    .row.controls
+      .col-md-10
+        #content.thread
+        input#field.message-field
+        input#send.send-button(type='button', value='send')
+
+      #room_users.user_list.col-md-2
+        | People:
+        #users
