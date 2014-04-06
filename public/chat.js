@@ -1,6 +1,6 @@
 var sendMessage;
 var displayMessage;
-var socket = io.connect('http://localhost:3700');
+var socket = io.connect();
 var acceptedUserName;
 
 window.onload = function() {
