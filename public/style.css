@@ -1,8 +1,14 @@
 .thread{
   height: 300px;
-  margin: 0 0 20px 0;
-  border: solid 1px #999;
+  /*margin: 0 0 20px 0;*/
+  /*border: solid 1px #999;*/
   overflow-y: scroll;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.message-field{
+  width: 400px;
 }
 
 body{

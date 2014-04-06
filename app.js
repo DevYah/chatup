@@ -48,7 +48,6 @@ io.sockets.on('connection', function(socket){
     if(rooms.getRoomNames().indexOf(newRoomName) === -1){
       io.sockets.emit('new_room_created', { roomName: newRoomName });
       rooms.joinRoom(socket, newRoomName);
-
     } else {
       socket.emit('not_valid_group_name', {});
     }

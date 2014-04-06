@@ -24,7 +24,7 @@ var joinRoom = function(socket, roomName){
 
   socket.join(roomName);
 
-  socket.emit('user_list', getUserList(roomName));
+  socket.emit('room_joined', getUserList(roomName));
   socket.broadcast.to(roomName).emit('add_person', username);
 };
 

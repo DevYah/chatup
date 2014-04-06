@@ -25,18 +25,19 @@ window.onload = function() {
 
   socket.on('new_room_created', function(data){
     var newRoomName = data.roomName;
-    var html = 
-      '<input type="button" value="' + newRoomName + '" class="button room">';
+    var html =  '<a data="' + newRoomName + '" class="room"> ' + newRoomName + '<a/><br>';
     $("#rooms").append(html);
   });
 
-  socket.on('user_list', function(usernames){
+  socket.on('room_joined', function(usernames){
     var html = '<ul>';
     usernames.forEach(function(username){
       html += '<li value="' + username + '">' + username  + '</li>';
     });
     html += '</ul>';
     $('#users')[0].innerHTML = html;
+    $('#group_step').hide();
+    $('#chat_step').show();
   });
 
   socket.on('add_person', function(username){
@@ -54,17 +55,14 @@ window.onload = function() {
   });
 
   socket.on('not_valid_roomname', function(){
+    $('#group_step .error')[0].innerHTML = data.error;
   });
 
-  socket.on('room_joined', function(){
-
-  });
-
-  socket.on('private_message', function(data){
-    var from = data.from;
-    var message = data.message;
-    alert('you got a message from ' + from + " :" + message);
-  });
+  //socket.on('private_message', function(data){
+    //var from = data.from;
+    //var message = data.message;
+    //alert('you got a message from ' + from + " :" + message);
+  //});
 
   socket.on('username_set', function(){
     $('#username_step').hide();
@@ -78,7 +76,6 @@ window.onload = function() {
   };
   /* CHAT SUTFF END  */
 
-  /* */
   $('#set_username').on('click', function(){
     socket.emit('set_username', {username: usernameField.val()});
     acceptedUserName = usernameField.val();
@@ -87,21 +84,38 @@ window.onload = function() {
 
   $('#create_room').on('click', function(){
     socket.emit('create_room', {roomName: newRoomField.val()});
-    $('#group_step').hide();
-    $('#chat_step').show();
   });
 
   $('#rooms').on('click', '.room', function(){
     var roomName = $(this).attr('data').toLowerCase();
     socket.emit('join_room', {roomName: roomName});
-    $('#group_step').hide();
-    $('#chat_step').show();
   });
 
   $('#room_users').on('click', 'li', function(){
     var toUsername = $(this).attr('value');
-    alert('you clicked on ' + toUsername + ', ' + acceptedUserName);
+
+    var proper_chat = $('ul.nav li#' + toUsername);
+
+    if(proper_chat.length === 0){
+      var html = '<li id="' + toUsername +'"> <a>' + toUsername + '</a></li>';
+      $('#navChats').append(html);
+
+      var tabcontent = '<div class="tab-pane" id="b"> bel 7ob ya welad el kalab </div>'
+    }else{
+    }
+
+    //var html='<div id="chat_' + toUsername+ '" to="' + toUsername + '">';
+    //html += 'Chat iwth ' + toUsername + '<br>';
+    //html += '<div class="thread">';
+    //html += '</div>';
+    //html += '<input private="true" to="' + toUsername +'">';
+    //html += '<input id="send" type="button" value="send">';
+
+    //html += '</div>';
+    //alert('you clicked on ' + toUsername + ', ' + acceptedUserName);
+    //$('#chat_step').append(html);
   });
+
 };
 
 $(document).ready(function() {
