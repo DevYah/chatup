@@ -11,6 +11,7 @@ window.onload = function() {
   var sendButton = $("#send")[0];
   var mainThread = $("#content")[0];
 
+  //$('#username_step').hide();
   $('#group_step').hide();
   $('#chat_step').hide();
 
@@ -91,7 +92,7 @@ window.onload = function() {
   });
 
   $('#rooms').on('click', '.room', function(){
-    var roomName = $(this).val().toLowerCase();
+    var roomName = $(this).attr('data').toLowerCase();
     socket.emit('join_room', {roomName: roomName});
     $('#group_step').hide();
     $('#chat_step').show();
@@ -107,6 +108,18 @@ $(document).ready(function() {
     $("#field").keyup(function(e) {
         if(e.keyCode === 13) {
             sendMessage();
+        }
+    });
+
+    $("#username").keyup(function(e) {
+        if(e.keyCode === 13) {
+          $('#set_username').click();
+        }
+    });
+
+    $("#new_room_name").keyup(function(e) {
+        if(e.keyCode === 13) {
+          $('#create_room').click();
         }
     });
 });

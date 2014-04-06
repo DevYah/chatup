@@ -1,7 +1,6 @@
 extends layout
 
 block append head
-  //script(src='/page.js')
   script(src='/chat.js')
   include chat_pane
 
@@ -9,7 +8,7 @@ block append content
   .container
     .jumbotron
       h1 Chat up and Enjoy 
-      p Get read for a lovely chat
+      p Get ready for a lovely chat
 
       #username_step
         input.form-control#username(placeholder='Username', style="height:50px; width:300px")
@@ -28,7 +27,7 @@ block append content
         else
           span#rooms
             each roomName in roomNames
-              a.room(type='button') #{roomName} 
+              a.room(data=roomName) #{roomName} 
                 span.label.badge hot
               br
 
