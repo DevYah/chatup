@@ -7,18 +7,16 @@ window.onload = function() {
   var usernameField = $('#username');
   var newRoomField = $('#new_room_name');
 
-  /* CHAT SUTFF START  */
   var field = $("#field")[0];
   var sendButton = $("#send")[0];
   var mainThread = $("#content")[0];
 
-  //$('#username_step').hide();
   $('#group_step').hide();
   $('#chat_step').hide();
 
   socket.on('message', function (data) {
     if(data.message) {
-      displayMessage(data.username, data.message, mainThread);
+      displayMessage(mainThread, data.message, data.username);
     } else {
       console.log("There is a problem:", data);
     }
@@ -41,12 +39,12 @@ window.onload = function() {
   });
 
   socket.on('add_person', function(username){
-    displayMessage("update", username + " has joined", mainThread);
+    displayMessage(mainThread,username + " has joined");
     $('#users ul').append('<li value="' + username + '">' + username + '</li>');
   });
 
   socket.on('person_left', function(username){
-    displayMessage("update", username + " has left", mainThread);
+    displayMessage(mainThread,username + " has left");
     $('#users li[value=' + username +']').remove();
   });
 
@@ -102,8 +100,13 @@ $(document).ready(function() {
     });
 });
 
-displayMessage = function(username, message, chatWindow){
-  var html = username + ": " + message + "<br />";
+displayMessage = function(chatWindow,  message, username){
+  var html;
+  if(username)
+    html = username + ": " + message + "<br />";
+  else
+    html = message + "<br />";
+
   chatWindow.innerHTML += html;
   chatWindow.scrollTop = chatWindow.scrollHeight;
 };
