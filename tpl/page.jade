@@ -1,7 +1,7 @@
 extends layout
 
 block append head
-  script(src='/page.js')
+  //script(src='/page.js')
   script(src='/chat.js')
 
 block append content
@@ -9,18 +9,17 @@ block append content
   input#username
   input.button#set_username(type='button', value='Set Username')
   br
-  p choose a group
-  input.button.group(type='button', value='Space')
-  input.button.group(type='button', value='Science')
-  input.button.group(type='button', value='Sports')
-  input.button.group(type='button', value='Business')
-  input.button.group(type='button', value='Educaiton')
+  h4 Create a group
+  input#new_room_name
+  input.button#create_room(type='button', value='Create Group')
+
+  h4 Choose a group
+  span#rooms
+    each roomName in roomNames
+      input.button.room(type='button', value=roomName)
   br
 
   #content.thread                           
   .controls                                 
-    | Name:                                 
-    input#name(style='width:350px;')        
-    br                                      
     input#field(style='width:350px;')       
     input#send(type='button', value='send') 

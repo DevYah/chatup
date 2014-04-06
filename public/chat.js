@@ -1,25 +1,32 @@
 var sendMessage;
+var socket = io.connect('http://localhost:3700');
+var acceptedUserName;
+
 window.onload = function() {
-  var messages = [];
+
+  var usernameField = $('#username');
+  var newRoomField = $('#new_room_name');
+
+  /* CHAT SUTFF START  */
   var field = $("#field")[0];
   var sendButton = $("#send")[0];
-  var content = $("#content")[0];
+  var mainThread = $("#content")[0];
 
   socket.on('message', function (data) {
     if(data.message) {
-      messages.push(data);
-      var html = '';
-      var i;
-      for(i=0; i<messages.length; i++) {
-        html += messages[i].username + ": ";
-        html += messages[i].message + '<br />';
-      }
-      // TODO append don't accumlate
-      content.innerHTML = html;
-      content.scrollTop = content.scrollHeight;
+      var html = data.username + ": " + data.message + "<br />";
+      mainThread.innerHTML += html;
+      mainThread.scrollTop = mainThread.scrollHeight;
     } else {
       console.log("There is a problem:", data);
     }
+  });
+
+  socket.on('new_room_created', function(data){
+    var newRoomName = data.roomName;
+    //$("#rooms")[0].innerHtml += ("Room: " + newRoomName + "<br>");
+    var html = '<input type="button" value="' + newRoomName + '" class="button room">'
+    $("#rooms").append(html);
   });
 
   sendButton.onclick = sendMessage = function() {
@@ -27,6 +34,26 @@ window.onload = function() {
     socket.emit('send', { message: text });
     field.value = '';
   };
+  /* CHAT SUTFF END  */
+
+  /* */
+  $('#set_username').click(function(){
+    socket.emit('set username', {username: usernameField.val()});
+    // FIXME need, to check first
+    acceptedUserName = usernameField.val();
+  });
+
+  $('#create_room').click(function(){
+    // TODO need to check
+    socket.emit('create_room', {roomName: newRoomField.val()});
+  });
+
+  $('#rooms').on('click', '.room', function(){
+    var roomName = $(this).val().toLowerCase();
+
+    console.log('room is ' + roomName);
+    socket.emit('choose a room', {roomName: roomName});
+  });
 };
 
 $(document).ready(function() {
