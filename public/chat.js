@@ -29,6 +29,16 @@ window.onload = function() {
     $("#rooms").append(html);
   });
 
+  socket.on('user_list', function(usernames){
+    var html = '<ul>';
+    usernames.forEach(function(username){
+      console.log(html);
+      html += '<li>' + username  + '</li>';
+    });
+    html += '</ul>';
+    $('#users')[0].innerHTML = html;
+  });
+
   sendButton.onclick = sendMessage = function() {
     var text = field.value;
     socket.emit('send', { message: text });

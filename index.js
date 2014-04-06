@@ -5,6 +5,7 @@ var io = require('socket.io').listen(app.listen(port), {log: false}); // realtim
 
 var usernameToSocketId = {};
 var getRoomNames;
+var getUserList;
 var joinRoom;
 
 // jade stuff
@@ -38,6 +39,21 @@ joinRoom = function(socket, roomName){
     username: 'SYSTEM',
     message:  username + ' has just joined our glorious ' + roomName
   });
+
+  io.sockets.in(roomName).emit('user_list', getUserList(roomName));
+};
+
+// OPTIMIZE (socket objects are huge)
+getUserList = function(roomName){
+  var roomSockets = io.sockets.clients(roomName);
+
+  var usernames = roomSockets.map(function(socket){
+    var username;
+    socket.get('username', function(err, uname){username=uname;});
+    return username;
+  });
+  console.log(usernames);
+  return usernames;
 };
 /* ROOM STUFF END*/
 
@@ -80,8 +96,9 @@ io.sockets.on('connection', function(socket){
   socket.on('send', function(data) {
     var roomName = io.sockets.manager.roomClients[socket.id][1];
     var message = data.message;
-    var username;
-    socket.get('username', function(err, uname){username=uname;});
+    //var username;
+    //socket.get('username', function(err, uname){username=uname;});
+    var username = socket.username;
 
     io.sockets.in(roomName).emit('message', {
       username: username,
