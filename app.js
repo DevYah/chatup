@@ -49,7 +49,7 @@ io.sockets.on('connection', function(socket){
       io.sockets.emit('new_room_created', { roomName: newRoomName });
       rooms.joinRoom(socket, newRoomName);
     } else {
-      socket.emit('not_valid_group_name', {});
+      socket.emit('not_valid_roomname', {error: 'name is already taken'});
     }
   });
 
@@ -66,8 +66,8 @@ io.sockets.on('connection', function(socket){
 
   socket.on('private_message', function(data){
     var fromUsername = socket.username;
-    var toUsername = data.username
-    var toSocket = rooms.getSocketFromUsername(username);
+    var toUsername = data.username;
+    var toSocket = rooms.getSocketFromUsername(toUsername);
     var message = data.message; 
 
     toSocket.emit('private_message', {from: fromUsername, message: message});

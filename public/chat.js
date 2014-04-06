@@ -11,7 +11,6 @@ window.onload = function() {
   var sendButton = $("#send")[0];
   var mainThread = $("#content")[0];
 
-  //$('#username_step').hide();
   $('#group_step').hide();
   $('#chat_step').hide();
 
@@ -25,16 +24,21 @@ window.onload = function() {
 
   socket.on('new_room_created', function(data){
     var newRoomName = data.roomName;
-    var html =  '<a data="' + newRoomName + '" class="room"> ' + newRoomName + '<a/><br>';
+    var html =  '<a data="' + newRoomName + '" class="room"> ' + newRoomName + '<a/>';
     $("#rooms").append(html);
+    if($('#rooms .alert').length !== 0)
+      $('#rooms .alert').remove();
   });
 
-  socket.on('room_joined', function(usernames){
+  socket.on('room_joined', function(data){
+    var usernames = data.usernames;
+    var roomName = data.roomName;
     var html = '<ul>';
     usernames.forEach(function(username){
       html += '<li value="' + username + '">' + username  + '</li>';
     });
     html += '</ul>';
+    $('li.active a').innerHTML = roomName;
     $('#users')[0].innerHTML = html;
     $('#group_step').hide();
     $('#chat_step').show();
@@ -54,15 +58,9 @@ window.onload = function() {
     $('#username_step .error')[0].innerHTML = data.error;
   });
 
-  socket.on('not_valid_roomname', function(){
+  socket.on('not_valid_roomname', function(data){
     $('#group_step .error')[0].innerHTML = data.error;
   });
-
-  //socket.on('private_message', function(data){
-    //var from = data.from;
-    //var message = data.message;
-    //alert('you got a message from ' + from + " :" + message);
-  //});
 
   socket.on('username_set', function(){
     $('#username_step').hide();
@@ -90,32 +88,6 @@ window.onload = function() {
     var roomName = $(this).attr('data').toLowerCase();
     socket.emit('join_room', {roomName: roomName});
   });
-
-  $('#room_users').on('click', 'li', function(){
-    var toUsername = $(this).attr('value');
-
-    var proper_chat = $('ul.nav li#' + toUsername);
-
-    if(proper_chat.length === 0){
-      var html = '<li id="' + toUsername +'"> <a>' + toUsername + '</a></li>';
-      $('#navChats').append(html);
-
-      var tabcontent = '<div class="tab-pane" id="b"> bel 7ob ya welad el kalab </div>'
-    }else{
-    }
-
-    //var html='<div id="chat_' + toUsername+ '" to="' + toUsername + '">';
-    //html += 'Chat iwth ' + toUsername + '<br>';
-    //html += '<div class="thread">';
-    //html += '</div>';
-    //html += '<input private="true" to="' + toUsername +'">';
-    //html += '<input id="send" type="button" value="send">';
-
-    //html += '</div>';
-    //alert('you clicked on ' + toUsername + ', ' + acceptedUserName);
-    //$('#chat_step').append(html);
-  });
-
 };
 
 $(document).ready(function() {

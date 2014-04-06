@@ -8,28 +8,30 @@ block append content
   .container
     .jumbotron
       h1 Chat up and Enjoy 
-      p Get ready for a lovely chat
+      p Get ready for a chat
 
       #username_step
         input.form-control#username(placeholder='Username', style="height:50px; width:300px")
         br
-        p.btn.btn-primary.btn-lg#set_username Join Now
         .error
+        p.btn.btn-primary.btn-lg#set_username Join Now
       #group_step
-        h4 Create a group
-        input.form-control#new_room_name(placeholder='GroupName', style="height:50px; width:300px")
-        br
-        p.btn.btn-primary.btn-lg#create_room Create Group
+        h4 Join a group
 
-        h4 Choose a group
-        if(roomNames.length == 0)
-          p.alert No rooms availble, why not create one? 
-        else
-          span#rooms
+        #rooms
+          if(roomNames.length == 0)
+            p.alert No rooms availble, why not create one? 
+          else
             each roomName in roomNames
               a.room(data=roomName) #{roomName} 
-                span.label.badge hot
-              br
+        br
+        h4 Start your own
+
+        input.form-control#new_room_name(placeholder='GroupName', style="height:50px; width:300px")
+        br
+        .error
+        p.btn.btn-primary.btn-lg#create_room Create Group
+
 
 
       #chat_step.span10

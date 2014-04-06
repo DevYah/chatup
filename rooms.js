@@ -24,19 +24,23 @@ var joinRoom = function(socket, roomName){
 
   socket.join(roomName);
 
-  socket.emit('room_joined', getUserList(roomName));
+  socket.emit('room_joined', {
+    roomName: roomName, 
+    usernames: getUserList(roomName)});
   socket.broadcast.to(roomName).emit('add_person', username);
 };
 
 var isUsernameInvalid = function(username){
   username = username.trim();
-  if(allUsernames[username])
-     return {error: "Username already taken"};
+  if(allUsernames[username]){
+    return {error: "Username already taken"};
+  }
 
-   if(!username.match(/^[a-zA-Z0-9_]+$/))
-     return {error: "only use alphabets, numbers or underscore '_'"};
+  if(!username.match(/^[a-zA-Z0-9_]+$/)){
+    return {error: "only use alphabets, numbers or underscore '_'"};
+  }
 
-   return false;
+  return false;
 };
 
 var getSocketRoomName = function(socket){
@@ -48,11 +52,11 @@ var getSocketRoomName = function(socket){
   return roomName;
 };
 
-var addUsername = function(username, roomName, socketId){
+var addUsername = function(username, socketId){
   allUsernames[username] = socketId;
 };
 
-var removeUsername = function(username, roomName){
+var removeUsername = function(username){
   delete allUsernames[username] ;
 };
 
