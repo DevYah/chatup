@@ -12,6 +12,7 @@ window.onload = function() {
   var sendButton = $("#send")[0];
   var mainThread = $("#content")[0];
 
+  //$('#username_step').hide();
   $('#group_step').hide();
   $('#chat_step').hide();
 
@@ -40,14 +41,17 @@ window.onload = function() {
   });
 
   socket.on('add_person', function(username){
+    displayMessage("update", username + " has joined", mainThread);
     $('#users li').append('<li value="' + username + '">' + username + '</li>');
   });
 
   socket.on('person_left', function(username){
+    displayMessage("update", username + " has left", mainThread);
     $('#users li[value=' + username +']').remove();
   });
 
-  socket.on('not_valid_username', function(){
+  socket.on('not_valid_username', function(data){
+    $('#username_step .error')[0].innerHTML = data.error;
   });
 
   socket.on('not_valid_roomname', function(){

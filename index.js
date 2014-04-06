@@ -8,6 +8,7 @@ var getRoomNames;
 var getUserList;
 var joinRoom;
 var getSocketRoomName;
+var allUsernames = {};
 
 // jade stuff
 app.set('views', __dirname + '/tpl');
@@ -22,7 +23,6 @@ app.get("/", function(req, res) {
   res.render('page', {roomNames: getRoomNames()});
 });
 
-//app.listen(port); // not realtime
 
 
 /* ROOMS STUFF START */
@@ -40,7 +40,7 @@ joinRoom = function(socket, roomName){
   socket.broadcast.to(roomName).emit('add_person', username);
 };
 
-// OPTIMIZE (socket objects are huge)
+// OPTIMIZE (socket objects aren't tiny)
 getUserList = function(roomName){
   var roomSockets = io.sockets.clients(roomName);
 
@@ -48,8 +48,18 @@ getUserList = function(roomName){
     var username = socket.username;
     return username;
   });
-  console.log(usernames);
   return usernames;
+};
+
+var isUsernameInvalid = function(username){
+  username = username.trim();
+  if(allUsernames[username])
+     return {error: "Username already taken"};
+
+   if(!username.match(/^[a-zA-Z0-9_]+$/))
+     return {error: "only use alphabets, numbers or underscore '_'"};
+
+   return false;
 };
 
 getSocketRoomName = function(socket){
@@ -72,16 +82,17 @@ io.sockets.on('connection', function(socket){
 
   socket.on('set_username', function(data) {
     var username = data.username;
-    if(usernameToSocketId[usernameToSocketId] || username === 'SYSTEM'){
-      socket.emit('not_valid_username', {});
-    } else{
+    var invalidty = isUsernameInvalid(username);
+    if(!invalidty){
       socket.username = username;
       socket.emit('username_set', username);
+      allUsernames[username] = true;
+    } else{
+      socket.emit('not_valid_username', {error: invalidty.error});
     }
   });
 
   socket.on('join_room', function(data){
-    // assuming correct name
     var roomName = data.roomName;
     joinRoom(socket, roomName);
   });
@@ -111,14 +122,13 @@ io.sockets.on('connection', function(socket){
 
   socket.on('disconnect', function(data){
     var roomName = getSocketRoomName(socket);
-    console.log(socket.username + "has been disconnected from " + roomName);
+    var username = socket.username;
+    delete allUsernames[username];
     if(roomName){
-      socket.broadcast.to(roomName).emit('person_left', socket.username);
+      socket.broadcast.to(roomName).emit('person_left', username);
     }
   });
 });
-
-
 
 
 console.log('Listenintg on ' + port);

@@ -1,5 +1,4 @@
 .thread{
-  width: 500px;
   height: 300px;
   margin: 0 0 20px 0;
   border: solid 1px #999;
@@ -12,6 +11,13 @@ body{
   margin-right:auto;
 }
 
-.group{
-  margin: 10px;
+.user_list{
+  border: solid 1px #999;
+  overflow-y: scroll;
 }
+
+.error {
+  color: red;
+  font-size: 11px;
+}
+

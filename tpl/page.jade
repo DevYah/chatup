@@ -9,6 +9,7 @@ block append content
     label(for='username') Username
     input#username
     input.button#set_username(type='button', value='Set Username')
+    .error
   #group_step
     h4 Create a group
     input#new_room_name
@@ -19,13 +20,14 @@ block append content
       each roomName in roomNames
         input.button.room(type='button', value=roomName)
 
-  #chat_step
-    #content.thread
-    .controls
-      input#field(style='width:350px;')
-      input#send(type='button', value='send')
+  #chat_step.span10
+    .span6
+      #content.thread.
+      .controls
+        input#field()
+        input#send(type='button', value='send')
 
-    #room_users
+    #room_users.user_list.span2
       | People:
       #users
 
