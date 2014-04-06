@@ -1,9 +1,11 @@
 var express = require('express');
 var app = express();
 var port = 3700;
+var io = require('socket.io').listen(app.listen(port), {log: false}); // realtime
 
-var roomNames = [];
 var usernameToSocketId = {};
+var getRoomNames;
+var joinRoom;
 
 // jade stuff
 app.set('views', __dirname + '/tpl');
@@ -12,17 +14,32 @@ app.engine('jade', require('jade').__express);
 
 // static resources
 app.use(express.static(__dirname + '/public'));
-app.get('/room/:name', function(req, res) {
-  res.render('room', {name: req.params.name});
-});
 
 app.get("/", function(req, res) {
-  res.render('page', {roomNames: roomNames});
+  console.log(getRoomNames());
+  res.render('page', {roomNames: getRoomNames()});
 });
 
 //app.listen(port); // not realtime
 
-var io = require('socket.io').listen(app.listen(port), {log: false}); // realtime
+
+/* ROOMS STUFF START */
+getRoomNames = function(){
+  var roomNames = Object.keys(io.sockets.manager.rooms).slice(1);
+  return roomNames.map(function(name){return name.slice(1);});
+};
+
+joinRoom = function(socket, roomName){
+  var username;
+  socket.get('username', function(err, uname){username=uname;});
+
+  socket.join(roomName);
+  io.sockets.in(roomName).emit('message', {
+    username: 'SYSTEM',
+    message:  username + ' has just joined our glorious ' + roomName
+  });
+};
+/* ROOM STUFF END*/
 
 io.sockets.on('connection', function(socket){
   socket.emit('message', 
@@ -31,42 +48,31 @@ io.sockets.on('connection', function(socket){
                 username: 'SYSTEM'
               });
 
-  socket.on('set username', function(data) {
+  socket.on('set_username', function(data) {
     var username = data.username;
     if(usernameToSocketId[usernameToSocketId] || username === 'SYSTEM'){
       socket.emit('not_valid_username', {});
     } else{
       socket.set('username', username, function(){
-        console.log('set username of ' + username);
         usernameToSocketId[data.username] = socket.id;
       });
     }
   });
 
-  socket.on('choose a room', function(data){
+  socket.on('join_room', function(data){
     // assuming correct name
     var roomName = data.roomName;
-    var username;
-    socket.get('username', function(err, uname){username=uname;});
-
-    console.log('name ' + username + ' is choosing ' + roomName);
-
-    socket.join(roomName, function(){
-      io.sockets.in(roomName).emit('message', {
-        username: 'SYSTEM',
-        message:  username + ' has just joined our glorious ' + roomName
-      });
-    });
+    joinRoom(socket, roomName);
   });
 
   socket.on('create_room', function(data){
     var newRoomName = data.roomName;
-    if(roomNames.indexOf(newRoomName) === -1){
+    if(getRoomNames().indexOf(newRoomName) === -1){
       console.log('added new room ' + newRoomName);
-      roomNames.push(data.roomName);
       io.sockets.emit('new_room_created', { roomName: newRoomName });
+      joinRoom(socket, newRoomName);
+
     } else {
-      console.log('not a valid roomanem ' + newRoomName);
       socket.emit('not_valid_group_name', {});
     }
   });
@@ -77,12 +83,6 @@ io.sockets.on('connection', function(socket){
     var username;
     socket.get('username', function(err, uname){username=uname;});
 
-
-    console.log(io.sockets.manager.roomClients[socket.id]);
-    console.log('room name is : ' + roomName);
-    console.log('username is ' + username);
-    console.log('messaeg is ' + message);
-
     io.sockets.in(roomName).emit('message', {
       username: username,
       message: message
@@ -92,4 +92,6 @@ io.sockets.on('connection', function(socket){
 
 
 
+
 console.log('Listenintg on ' + port);
+

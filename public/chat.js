@@ -24,8 +24,8 @@ window.onload = function() {
 
   socket.on('new_room_created', function(data){
     var newRoomName = data.roomName;
-    //$("#rooms")[0].innerHtml += ("Room: " + newRoomName + "<br>");
-    var html = '<input type="button" value="' + newRoomName + '" class="button room">'
+    var html = 
+      '<input type="button" value="' + newRoomName + '" class="button room">';
     $("#rooms").append(html);
   });
 
@@ -37,28 +37,26 @@ window.onload = function() {
   /* CHAT SUTFF END  */
 
   /* */
-  $('#set_username').click(function(){
-    socket.emit('set username', {username: usernameField.val()});
+  $('#set_username').on('click', function(){
+    socket.emit('set_username', {username: usernameField.val()});
     // FIXME need, to check first
     acceptedUserName = usernameField.val();
   });
 
-  $('#create_room').click(function(){
+  $('#create_room').on('click', function(){
     // TODO need to check
     socket.emit('create_room', {roomName: newRoomField.val()});
   });
 
   $('#rooms').on('click', '.room', function(){
     var roomName = $(this).val().toLowerCase();
-
-    console.log('room is ' + roomName);
-    socket.emit('choose a room', {roomName: roomName});
+    socket.emit('join_room', {roomName: roomName});
   });
 };
 
 $(document).ready(function() {
     $("#field").keyup(function(e) {
-        if(e.keyCode == 13) {
+        if(e.keyCode === 13) {
             sendMessage();
         }
     });
