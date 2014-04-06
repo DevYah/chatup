@@ -5,26 +5,27 @@ block append head
   script(src='/chat.js')
 
 block append content
-  label(for='username') Username
-  input#username
-  input.button#set_username(type='button', value='Set Username')
-  br
-  h4 Create a group
-  input#new_room_name
-  input.button#create_room(type='button', value='Create Group')
+  #username_step
+    label(for='username') Username
+    input#username
+    input.button#set_username(type='button', value='Set Username')
+  #group_step
+    h4 Create a group
+    input#new_room_name
+    input.button#create_room(type='button', value='Create Group')
 
-  h4 Choose a group
-  span#rooms
-    each roomName in roomNames
-      input.button.room(type='button', value=roomName)
-  br
+    h4 Choose a group
+    span#rooms
+      each roomName in roomNames
+        input.button.room(type='button', value=roomName)
 
-  #content.thread                           
-  .controls                                 
-    input#field(style='width:350px;')       
-    input#send(type='button', value='send') 
+  #chat_step
+    #content.thread
+    .controls
+      input#field(style='width:350px;')
+      input#send(type='button', value='send')
 
-  #room_users
-    | People:
-    #users
+    #room_users
+      | People:
+      #users
 

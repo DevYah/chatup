@@ -7,6 +7,7 @@ var usernameToSocketId = {};
 var getRoomNames;
 var getUserList;
 var joinRoom;
+var getSocketRoomName;
 
 // jade stuff
 app.set('views', __dirname + '/tpl');
@@ -31,16 +32,12 @@ getRoomNames = function(){
 };
 
 joinRoom = function(socket, roomName){
-  var username;
-  socket.get('username', function(err, uname){username=uname;});
+  var username = socket.username;
 
   socket.join(roomName);
-  io.sockets.in(roomName).emit('message', {
-    username: 'SYSTEM',
-    message:  username + ' has just joined our glorious ' + roomName
-  });
 
-  io.sockets.in(roomName).emit('user_list', getUserList(roomName));
+  socket.emit('user_list', getUserList(roomName));
+  socket.broadcast.to(roomName).emit('add_person', username);
 };
 
 // OPTIMIZE (socket objects are huge)
@@ -48,12 +45,21 @@ getUserList = function(roomName){
   var roomSockets = io.sockets.clients(roomName);
 
   var usernames = roomSockets.map(function(socket){
-    var username;
-    socket.get('username', function(err, uname){username=uname;});
+    var username = socket.username;
     return username;
   });
   console.log(usernames);
   return usernames;
+};
+
+getSocketRoomName = function(socket){
+  //io.sockets.manager.roomClients[socket.id].keys[1]
+  var roomName = Object.keys(io.sockets.manager.roomClients[socket.id])[1];
+  if(roomName){
+    roomName = roomName.slice(1);
+  }
+
+  return roomName;
 };
 /* ROOM STUFF END*/
 
@@ -69,9 +75,8 @@ io.sockets.on('connection', function(socket){
     if(usernameToSocketId[usernameToSocketId] || username === 'SYSTEM'){
       socket.emit('not_valid_username', {});
     } else{
-      socket.set('username', username, function(){
-        usernameToSocketId[data.username] = socket.id;
-      });
+      socket.username = username;
+      socket.emit('username_set', username);
     }
   });
 
@@ -94,16 +99,22 @@ io.sockets.on('connection', function(socket){
   });
 
   socket.on('send', function(data) {
-    var roomName = io.sockets.manager.roomClients[socket.id][1];
+    var roomName = getSocketRoomName(socket);
     var message = data.message;
-    //var username;
-    //socket.get('username', function(err, uname){username=uname;});
     var username = socket.username;
 
     io.sockets.in(roomName).emit('message', {
       username: username,
       message: message
     });
+  });
+
+  socket.on('disconnect', function(data){
+    var roomName = getSocketRoomName(socket);
+    console.log(socket.username + "has been disconnected from " + roomName);
+    if(roomName){
+      socket.broadcast.to(roomName).emit('person_left', socket.username);
+    }
   });
 });
 
