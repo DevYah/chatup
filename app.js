@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var port = process.argv[2] || 8080;
-var io = require('socket.io').listen(app.listen(port), {log: false}); // realtime
+var io = require('socket.io').listen(app.listen(port), {log: false});
 exports.io = io;
 
 // responsible of the logic of the room
@@ -32,7 +32,7 @@ io.sockets.on('connection', function(socket){
     if(!invalidty){
       socket.username = username;
       socket.emit('username_set', username);
-      rooms.addUsername(username);
+      rooms.addUsername(username, socket.id);
     } else{
       socket.emit('not_valid_username', {error: invalidty.error});
     }
@@ -54,7 +54,7 @@ io.sockets.on('connection', function(socket){
     }
   });
 
-  socket.on('send', function(data) {
+  socket.on('message', function(data) {
     var roomName = rooms.getSocketRoomName(socket);
     var message = data.message;
     var username = socket.username;
@@ -63,6 +63,15 @@ io.sockets.on('connection', function(socket){
       username: username,
       message: message
     });
+  });
+
+  socket.on('private_message', function(data){
+    var fromUsername = socket.username;
+    var toUsername = data.username
+    var toSocket = rooms.getSocketFromUsername(username);
+    var message = data.message; 
+
+    toSocket.emit('private_message', {from: fromUsername, message: message});
   });
 
   socket.on('disconnect', function(){

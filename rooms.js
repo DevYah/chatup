@@ -48,12 +48,17 @@ var getSocketRoomName = function(socket){
   return roomName;
 };
 
-var addUsername = function(username, roomName){
-  allUsernames[username] = true;
+var addUsername = function(username, roomName, socketId){
+  allUsernames[username] = socketId;
 };
 
 var removeUsername = function(username, roomName){
   delete allUsernames[username] ;
+};
+
+var getSocketFromUsername = function(username){
+  var socketId = allUsernames[username];
+  return io.sockets.socket(socketId);
 };
 
 exports.getRoomNames      = getRoomNames;

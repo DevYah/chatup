@@ -3,31 +3,35 @@ extends layout
 block append head
   //script(src='/page.js')
   script(src='/chat.js')
+  include chat_pane
 
 block append content
-  #username_step
-    label(for='username') Username
-    input#username
-    input.button#set_username(type='button', value='Set Username')
-    .error
-  #group_step
-    h4 Create a group
-    input#new_room_name
-    input.button#create_room(type='button', value='Create Group')
+  .container
+    .jumbotron
+      h1 Chat up and Enjoy 
+      p Get read for a lovely chat
 
-    h4 Choose a group
-    span#rooms
-      each roomName in roomNames
-        input.button.room(type='button', value=roomName)
+      #username_step
+        input.form-control#username(placeholder='Username', style="height:50px; width:300px")
+        br
+        p.btn.btn-primary.btn-lg#set_username Join Now
+        .error
+      #group_step
+        h4 Create a group
+        input.form-control#new_room_name(placeholder='GroupName', style="height:50px; width:300px")
+        br
+        p.btn.btn-primary.btn-lg#create_room Create Group
 
-  #chat_step.span10
-    .span6
-      #content.thread.
-      .controls
-        input#field()
-        input#send(type='button', value='send')
+        h4 Choose a group
+        if(roomNames.length == 0)
+          p.alert No rooms availble, why not create one? 
+        else
+          span#rooms
+            each roomName in roomNames
+              a.room(type='button') #{roomName} 
+                span.label.badge hot
+              br
 
-    #room_users.user_list.span2
-      | People:
-      #users
 
+      #chat_step.span10
+        +chat_pane()

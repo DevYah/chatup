@@ -11,7 +11,7 @@ window.onload = function() {
   var sendButton = $("#send")[0];
   var mainThread = $("#content")[0];
 
-  //$('#group_step').hide();
+  $('#group_step').hide();
   $('#chat_step').hide();
 
   socket.on('message', function (data) {
