@@ -6,9 +6,8 @@
 }
 
 body{
-  width:80%;
-  margin-left:auto;
-  margin-right:auto;
+  background-color:#cccccc;
+  min-height: 100%;
 }
 
 .user_list{
@@ -20,4 +19,5 @@ body{
   color: red;
   font-size: 11px;
 }
+
 

@@ -11,7 +11,7 @@ window.onload = function() {
   var sendButton = $("#send")[0];
   var mainThread = $("#content")[0];
 
-  $('#group_step').hide();
+  //$('#group_step').hide();
   $('#chat_step').hide();
 
   socket.on('message', function (data) {
@@ -59,6 +59,12 @@ window.onload = function() {
 
   });
 
+  socket.on('private_message', function(data){
+    var from = data.from;
+    var message = data.message;
+    alert('you got a message from ' + from + " :" + message);
+  });
+
   socket.on('username_set', function(){
     $('#username_step').hide();
     $('#group_step').show();
@@ -66,7 +72,7 @@ window.onload = function() {
 
   sendButton.onclick = sendMessage = function() {
     var text = field.value;
-    socket.emit('send', { message: text });
+    socket.emit('message', { message: text });
     field.value = '';
   };
   /* CHAT SUTFF END  */
@@ -89,6 +95,11 @@ window.onload = function() {
     socket.emit('join_room', {roomName: roomName});
     $('#group_step').hide();
     $('#chat_step').show();
+  });
+
+  $('#room_users').on('click', 'li', function(){
+    var toUsername = $(this).attr('value');
+    alert('you clicked on ' + toUsername + ', ' + acceptedUserName);
   });
 };
 
