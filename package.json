@@ -1,11 +1,12 @@
 {
-  "name": "RealTimeChat",
-  "version": "0.0.0",
-  "description": "Real time web chat",
+  "name": "Chat Up",
+  "version": "0.0.1",
+  "description": "Chat up",
   "dependencies":{
     "socket.io": "latest", 
     "express": "latest",
-    "jade": "latest"
+    "jade": "latest",
+    "http-proxy": "latest"
   },
   "author": "Yahia El Gamal"
 }
