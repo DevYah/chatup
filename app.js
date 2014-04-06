@@ -4,13 +4,8 @@ var port = process.argv[2] || 8080;
 var io = require('socket.io').listen(app.listen(port), {log: false}); // realtime
 exports.io = io;
 
-
-//var getRoomNames;
-//var joinRoom;
-//var getUserList;
-//var isUsernameInvalid
-//var getSocketRoomName;
-var rooms = require('./room.js');
+// responsible of the logic of the room
+var rooms = require('./rooms.js');
 
 // jade stuff
 app.set('views', __dirname + '/tpl');
@@ -70,7 +65,7 @@ io.sockets.on('connection', function(socket){
     });
   });
 
-  socket.on('disconnect', function(data){
+  socket.on('disconnect', function(){
     var roomName = rooms.getSocketRoomName(socket);
     var username = socket.username;
     rooms.removeUsername(username);
@@ -80,6 +75,4 @@ io.sockets.on('connection', function(socket){
   });
 });
 
-
 console.log('Listenintg on ' + port);
-

@@ -42,7 +42,7 @@ window.onload = function() {
 
   socket.on('add_person', function(username){
     displayMessage("update", username + " has joined", mainThread);
-    $('#users li').append('<li value="' + username + '">' + username + '</li>');
+    $('#users ul').append('<li value="' + username + '">' + username + '</li>');
   });
 
   socket.on('person_left', function(username){
